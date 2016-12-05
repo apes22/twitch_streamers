@@ -1,8 +1,8 @@
-//make a get channel request for every user in the list
-//if we get a 404 error, then the user's channel does not exist
-//if we do get a channel objct, then we get its basic information (name, logo, channel_url)
-//we then make a get requests for streams for every active users
-//if the user's stream object returns a null stram object, then it must be offline
+//Make a get channel request for every user in the list.
+//If we get a 404 error, then the user's channel does not exist.
+//If we do get a channel object, then we get its basic information (name, logo, channel_url)
+//After all the channel requests have been completed, we create a string of active twitch users, and make a get stream request.
+//if the user is part of the returned stream array, then we gather the current stream info and updated the user to be online.
 //else we get the user's live stream  detail  
 var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "maribel"];
 
@@ -29,8 +29,12 @@ var userList = {
   addLiveStreamer: function(name, details){
     //find the user in the array and add details property
     var streamerIndex = this.findUser(name);
+    console.log("streamerIndex is: ", streamerIndex);
+    if(streamerIndex != -1){
+     this.users[streamerIndex].online = true;
     this.users[streamerIndex].details = details;
-     console.log( this.users[streamerIndex]);
+      
+    }
   },
   
   findUser: function(name){
@@ -66,14 +70,14 @@ function getTwitchUsers(potentialUsers, callback){
 //getActiveUserStreams(); 
 
 function getActiveUserStreams(){
-  var activeUsers = 'freecodecamp,ESL_SC2,OgamingSC2,cretetion,storbeck,habathcx, RobotCaleb,noobs2ninjas,maribel'; 
+  var activeUsers = 'freecodecamp,ESL_SC2,OgamingSC2,cretetion,storbeck,habathcx,RobotCaleb,noobs2ninjas,maribel'; 
   for (var user in userList.users){
-    console.log(users);
+    //console.log(users);
    // if (user.active){
         //activeUsers = user.name + ','
     //} 
   }
-  console.log("active user is:", activeUsers);
+  //console.log("active user is:", activeUsers);
   getStreams(activeUsers);
   
 }
@@ -99,7 +103,7 @@ function getChannel(userName){
           //console.log("user channel not found");
            var data = JSON.parse(request.response);
           userList.addInactiveUser(userName);
-          console.log(userList.users);
+          //console.log(userList.users);
            //console.log(data);
           document.getElementById('error').innerHTML = data.message;
         }
@@ -121,8 +125,12 @@ function getStreams(users){
   request.open('GET', url, true);
   request.onload = function() {
     if (request.status >= 200 && request.status < 400)  { // Success!
-        var streams = JSON.parse(request.response);
-      console.log(streams);
+        var streams = JSON.parse(request.response).streams;
+       streams.forEach(function(obj){
+         userList.addLiveStreamer(obj.channel.name, obj.channel.status);
+        console.log("streamer is: ", obj.channel.name, "and current stream status is: ", obj.channel.status)
+      });
+     console.log(userList.users);
        /* document.getElementById('name').innerHTML = channel.name;
       var channel_url = 'https://player.twitch.tv/?channel=' + channel.display_name;
       userList.addActiveUser(channel.name, channel.display_name,
