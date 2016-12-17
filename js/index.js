@@ -61,56 +61,54 @@ var user =  {
 
 //controller
 var controller = {
-  
+
   getActiveUserStreams: function(){
-    var activeUsers = ''; 
-    userList.users.forEach(function(user){
+  var activeUsers = '';
+  userList.users.forEach(function(user){
     if (user.active){
       activeUsers += user.name + ',';
     }
   });
-    this.getStreams(activeUsers);
+  this.getStreams(activeUsers);
   },
+  
   getChannel: function(userName){
-     
-  return new Promise(function(resolve,reject){
-    var url = 'https://api.twitch.tv/kraken/channels/' + userName + '?client_id=1fqby4hqnlm4h1t0ze5o5kgsn10k1z';
-    var request = new XMLHttpRequest();
-    request.open('GET', url, true);
-    request.onload = function () {
+    return new Promise(function(resolve,reject){
+      var url = 'https://api.twitch.tv/kraken/channels/' + userName + '?client_id=1fqby4hqnlm4h1t0ze5o5kgsn10k1z';
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.onload = function () {
       if (request.status >= 200 && request.status < 400)  { // Success!
         resolve(request.response);
-        }else{
-          if (request.status == 404){
+      }else{
+        if (request.status == 404){
            resolve(request.response);
-          }
-        reject(Error(request.statusText)); // We reached our target server, but it returned an error
         }
+        reject(Error(request.statusText)); // We reached our target server, but it returned an error
+       }
       };
       request.onerror = function() {
-      reject(Error("Network Error"));// There was a connection error of some sort
+      reject(Error("Network Error"));  // There was a connection error of some sort
       };
-      request.send();
+    request.send();
   });
   },
   getStreams: function(users){
     var url = 'https://api.twitch.tv/kraken/streams?channel=' + users + '&client_id=1fqby4hqnlm4h1t0ze5o5kgsn10k1z';
-  
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-  request.onload = function() {
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.onload = function() {
     if (request.status >= 200 && request.status < 400)  { // Success!
-        var streams = JSON.parse(request.response).streams;
-       streams.forEach(function(obj){
-         console.log(obj.channel.name);
-         userList.addLiveStreamer(obj.channel.name, obj.channel.status);
-       });
-      }else{
+      var streams = JSON.parse(request.response).streams;
+      streams.forEach(function(obj){
+        userList.addLiveStreamer(obj.channel.name, obj.channel.status);
+      });
+      view.displayUsers("all");
+    }else{
        // We reached our target server, but it returned an error   
-      }
-    console.log(userList.users);
+    }
   };
-    request.onerror = function() {
+  request.onerror = function() {
       // There was a connection error of some sort
     };
     request.send();
@@ -119,36 +117,32 @@ var controller = {
   getTwitchUsers: function(potentialUsers){
     var requests = [];
     // var theControllerObj = this;
-   potentialUsers.forEach(function (userName){
-     //But here inside the anonymous function (that we pass to the forEach method), "this" no longer refers to the controller object.​
-    // This inner function cannot access the outer function's "this"​
+    potentialUsers.forEach(function (userName){
     requests.push(
-    this.getChannel(userName).then(function(response) {
-     var channel = JSON.parse(response);
-    if (channel.error == "Not Found"){
-      userList.addInactiveUser(userName);
-        document.getElementById('error').innerHTML = channel.error;
-      }else{
-        document.getElementById('name').innerHTML = channel.name;
-        var channel_url = 'https://player.twitch.tv/?channel=' + channel.display_name;
-        userList.addActiveUser(channel.name, channel.display_name, channel.logo, channel_url);
+      this.getChannel(userName).then(function(response) {
+        var channel = JSON.parse(response);
+        if (channel.error == "Not Found"){
+          userList.addInactiveUser(userName);
+         // document.getElementById('error').innerHTML = channel.error;
+        }else{
+         // document.getElementById('name').innerHTML = channel.name;
+          var channel_url = 'https://player.twitch.tv/?channel=' + channel.display_name;
+          userList.addActiveUser(channel.name, channel.display_name, channel.logo, channel_url);
       }
     }, function(error) {
         console.error("Failed!", error);
-      
       })
       )
- }, this);
-   Promise.all(requests).then(function(results) {
+ },this);
+    Promise.all(requests).then(function(results) {
     console.log("All promises resolved!");
     console.log(requests.length);
-   // theControllerObj.getActiveUserStreams();
-this.getActiveUserStreams();
+    this.getActiveUserStreams();
   }.bind(this)).catch(function(error) {
   // One or more promises was rejected
-  }.bind(this));
-   
+  }.bind(this)); 
 },
+  
   //change to function name to addPages?
   search: function(searchWord){ 
     pageList.clear();
@@ -181,25 +175,114 @@ this.getActiveUserStreams();
 //view
 var view = {
   //show pages in an unordered list
-  displayPages: function(){
-    document.getElementById("wikipedia-logo").className="transformWikiImg";
-    var pageUl = document.getElementById("pageList");
-    
-    pageList.pages.forEach(function(page){
+  displayUsers: function(filter){
+    //document.getElementById("wikipedia-logo").className="transformWikiImg";
+    var userUl = document.getElementById("userList");
+    userUl.innerHTML = "";
+    userList.users.forEach(function(user){
+      console.log(user.name)
+      if (user.active){
       var anchor = document.createElement("a");
-      anchor.href = page.url;
+      anchor.href = user.channel_url;
       anchor.target = "_blank";
-      var pageLi = document.createElement("li");
+      var userLi = document.createElement("li");
       var h3 = document.createElement("h3");               
-      h3.textContent = page.title;
+      h3.textContent = user.display_name;
       var paragraph = document.createElement("p");
-      paragraph.textContent = page.extract;
-      pageUl.appendChild(anchor);
-      anchor.appendChild(pageLi);
-      pageLi.appendChild(h3);
-      pageLi.appendChild(paragraph);
+      paragraph.textContent = (user.online) ? "online":"offline";
+      userLi.className = (user.online) ? "online":"offline";
+     // paragraph.textContent = user.small_logo;
+      userUl.appendChild(anchor);
+      anchor.appendChild(userLi);
+      userLi.appendChild(h3);
+      userLi.appendChild(paragraph);
+      }
+      else{
+      
+      var userLi = document.createElement("li");
+      var h3 = document.createElement("h3"); 
+      var paragraph = document.createElement("p");
+      paragraph.textContent = "does not exist";
+      userLi.className = "invalidUser";
+      h3.textContent = user.name;
+      userUl.appendChild(userLi);
+      userLi.appendChild(h3); 
+      userLi.appendChild(paragraph);
+      }
     });
+     console.log(userUl);
   },
+  
+  displayAllUsers: function(){
+    //console.log( document.querySelectorAll(".online"));
+    var onlines = document.getElementsByClassName("online");
+    for (var i = 0; onlines[i]; i++) {
+      //onlines[i].style.visibility = 'visible';
+      onlines[i].style.display = 'block';
+      //online.forEach(function(element){element.style.visibility = 'visible';});
+    }
+    
+    var offlines = document.getElementsByClassName("offline");
+    for (var i = 0; offlines[i]; i++) {
+      //offlines[i].style.visibility = 'visible';
+      offlines[i].style.display = 'block';
+      //document.getElementsByClassName("offline").style.visibility = 'visible';
+    }
+    
+    var invalidUsers = document.getElementsByClassName("invalidUser");
+    for (var i = 0; invalidUsers[i]; i++) {
+      //invalidUsers[i].style.visibility = 'visible';
+      invalidUsers[i].style.display = 'block';
+      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
+    }
+    
+  },
+  displayOnlineUsers: function(){
+     //console.log( document.querySelectorAll(".online"));
+    var onlines = document.getElementsByClassName("online");
+    for (var i = 0; onlines[i]; i++) {
+      //onlines[i].style.visibility = 'visible';
+       onlines[i].style.display = 'block';
+      //online.forEach(function(element){element.style.visibility = 'visible';});
+    }
+    
+    var offlines = document.getElementsByClassName("offline");
+    for (var i = 0; offlines[i]; i++) {
+      //offlines[i].style.visibility = 'hidden';
+        offlines[i].style.display = 'none';
+      //document.getElementsByClassName("offline").style.visibility = 'visible';
+    }
+    
+    var invalidUsers = document.getElementsByClassName("invalidUser");
+    for (var i = 0; invalidUsers[i]; i++) {
+     // invalidUsers[i].style.visibility = 'hidden';
+       invalidUsers[i].style.display = 'none';
+      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
+    }
+  },
+  displayOfflineUsers: function(){
+    //console.log( document.querySelectorAll(".online"));
+    var onlines = document.getElementsByClassName("online");
+    for (var i = 0; onlines[i]; i++) {
+      onlines[i].style.display= 'none';
+      //online.forEach(function(element){element.style.visibility = 'visible';});
+    }
+    
+    var offlines = document.getElementsByClassName("offline");
+    for (var i = 0; offlines[i]; i++) {
+        offlines[i].style.display= 'block';
+     // offlines[i].style.visibility = 'visible';
+      //document.getElementsByClassName("offline").style.visibility = 'visible';
+    }
+    
+    var invalidUsers = document.getElementsByClassName("invalidUser");
+    for (var i = 0; invalidUsers[i]; i++) {
+      //invalidUsers[i].style.visibility = 'hidden';
+      invalidUsers[i].style.display= 'none';
+      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
+    }
+  },
+  
   
   clearList: function(){
   document.getElementById("pageList").innerHTML='';
@@ -215,14 +298,17 @@ var view = {
      document.getElementById("showAllBtn").addEventListener("click", function(){
       var currentButtonSelection = document.getElementById("currentButtonSelection");
        currentButtonSelection.innerHTML = "Show All Users";
+       view.displayAllUsers();
         });
     document.getElementById("showOnlineBtn").addEventListener("click", function(){
       var currentButtonSelection = document.getElementById("currentButtonSelection");
        currentButtonSelection.innerHTML = "Show Online Users";
+       view.displayOnlineUsers();
        });
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
       var currentButtonSelection = document.getElementById("currentButtonSelection");
       currentButtonSelection.innerHTML = "Show Offline Users";
+      view.displayOfflineUsers();
        
     });
   }
