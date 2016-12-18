@@ -26,7 +26,6 @@ var userList = {
       channel_url: channel_url
     });
   },
-  
   addLiveStreamer: function(name, details){
     //find the user in the array and add details property
     var streamerIndex = this.findUser(name);
@@ -34,10 +33,8 @@ var userList = {
     if(streamerIndex != -1){
      this.users[streamerIndex].online = true;
      this.users[streamerIndex].details = details;
-
     }
   },
-  
   findUser: function(name){
     return this.users.findIndex(isName);      
     function isName(obj){
@@ -45,33 +42,10 @@ var userList = {
     }
   }  
 };
-/*
-var user =  {
-    name: "",
-    display_name: "",
-    active: false,
-    online: false,
-    small_logo: "",
-    medium_logo: "",
-    large_logo: "",
-    channel_url: "",
-    details: ""
-}
-*/
 
 //controller
 var controller = {
 
-  getActiveUserStreams: function(){
-  var activeUsers = '';
-  userList.users.forEach(function(user){
-    if (user.active){
-      activeUsers += user.name + ',';
-    }
-  });
-  this.getStreams(activeUsers);
-  },
-  
   getChannel: function(userName){
     return new Promise(function(resolve,reject){
       var url = 'https://api.twitch.tv/kraken/channels/' + userName + '?client_id=1fqby4hqnlm4h1t0ze5o5kgsn10k1z';
@@ -82,7 +56,8 @@ var controller = {
         resolve(request.response);
       }else{
         if (request.status == 404){
-           resolve(request.response);
+          //resolving an invalid user because we still want to add each username to our list of users
+           resolve(request.response); 
         }
         reject(Error(request.statusText)); // We reached our target server, but it returned an error
        }
@@ -113,19 +88,15 @@ var controller = {
     };
     request.send();
   },
-  
   getTwitchUsers: function(potentialUsers){
     var requests = [];
-    // var theControllerObj = this;
     potentialUsers.forEach(function (userName){
     requests.push(
       this.getChannel(userName).then(function(response) {
         var channel = JSON.parse(response);
         if (channel.error == "Not Found"){
           userList.addInactiveUser(userName);
-         // document.getElementById('error').innerHTML = channel.error;
         }else{
-         // document.getElementById('name').innerHTML = channel.name;
           var channel_url = 'https://player.twitch.tv/?channel=' + channel.display_name;
           userList.addActiveUser(channel.name, channel.display_name, channel.logo, channel_url);
       }
@@ -134,182 +105,103 @@ var controller = {
       })
       )
  },this);
+    //Waits for all the get stream requests to resolve
     Promise.all(requests).then(function(results) {
     console.log("All promises resolved!");
-    console.log(requests.length);
     this.getActiveUserStreams();
   }.bind(this)).catch(function(error) {
   // One or more promises was rejected
   }.bind(this)); 
 },
-  
-  //change to function name to addPages?
-  search: function(searchWord){ 
-    pageList.clear();
-    view.clearList();
-    var apiURL = 'https://en.wikipedia.org/w/api.php?format=json&origin=*&action=query&generator=search&gsrlimit=10&prop=extracts&exintro&explaintext&exsentences=1&exlimit=max&gsrsearch=' + searchWord;
-    var request = new XMLHttpRequest();
-    request.open('GET', apiURL, true);
-    request.onload = function() {
-      if (request.status >= 200 && request.status < 400)  { // Success!
-        var data = JSON.parse(request.response);
-        var results = data.query.pages; //results is an object of objects
-        var pageIds= Object.getOwnPropertyNames(results);
-         pageIds.forEach(function(id){
-            var wiki_url = 'https://en.wikipedia.org/?curid=' + id;
-            pageList.addPage(id, results[id].title, results[id].extract, wiki_url);
-         });
-         view.displayPages();
-
-      }else{
-      // We reached our target server, but it returned an error
-      }
-    };
-    request.onerror = function() {
-      // There was a connection error of some sort
-    };
-    request.send();
-  }    
+getActiveUserStreams: function(){
+  var activeUsers = '';
+  userList.users.forEach(function(user){
+    if (user.active){
+      activeUsers += user.name + ',';
+    }
+  });
+  this.getStreams(activeUsers);
+  }
 };
+
 
 //view
 var view = {
   //show pages in an unordered list
-  displayUsers: function(filter){
-    //document.getElementById("wikipedia-logo").className="transformWikiImg";
+  displayUsers: function(){
     var userUl = document.getElementById("userList");
     userUl.innerHTML = "";
     userList.users.forEach(function(user){
-      console.log(user.name)
       if (user.active){
-      var anchor = document.createElement("a");
-      anchor.href = user.channel_url;
-      anchor.target = "_blank";
-      var userLi = document.createElement("li");
-      var h3 = document.createElement("h3");               
-      h3.textContent = user.display_name;
-      var paragraph = document.createElement("p");
-      paragraph.textContent = (user.online) ? "online":"offline";
-      userLi.className = (user.online) ? "online":"offline";
-     // paragraph.textContent = user.small_logo;
-      userUl.appendChild(anchor);
-      anchor.appendChild(userLi);
-      userLi.appendChild(h3);
-      userLi.appendChild(paragraph);
+        var anchor = document.createElement("a");
+        anchor.href = user.channel_url;
+        anchor.target = "_blank";
+        var userLi = document.createElement("li");
+        var h3 = document.createElement("h3");
+        h3.textContent = user.display_name;
+        var paragraph = document.createElement("p");
+        paragraph.textContent = (user.online) ? "online":"offline";
+        userLi.className = (user.online) ? "online":"offline";
+        // paragraph.textContent = user.small_logo;
+        userUl.appendChild(anchor);
+        anchor.appendChild(userLi);
+        userLi.appendChild(h3);
+        userLi.appendChild(paragraph);
       }
       else{
-      
-      var userLi = document.createElement("li");
-      var h3 = document.createElement("h3"); 
-      var paragraph = document.createElement("p");
-      paragraph.textContent = "does not exist";
-      userLi.className = "invalidUser";
-      h3.textContent = user.name;
-      userUl.appendChild(userLi);
-      userLi.appendChild(h3); 
-      userLi.appendChild(paragraph);
+        var userLi = document.createElement("li");
+        var h3 = document.createElement("h3"); 
+        var paragraph = document.createElement("p");
+        paragraph.textContent = "does not exist";
+        userLi.className = "invalidUser";
+        h3.textContent = user.name;
+        userUl.appendChild(userLi);
+        userLi.appendChild(h3); 
+        userLi.appendChild(paragraph);
       }
     });
-     console.log(userUl);
   },
-  
-  displayAllUsers: function(){
-    //console.log( document.querySelectorAll(".online"));
+//went from 60 lines to 13 woot woot 
+filterUsers: function(filter){
+    //retrieve html collections for the following classes: online, offline, invalidUser
     var onlines = document.getElementsByClassName("online");
-    for (var i = 0; onlines[i]; i++) {
-      //onlines[i].style.visibility = 'visible';
-      onlines[i].style.display = 'block';
-      //online.forEach(function(element){element.style.visibility = 'visible';});
-    }
-    
     var offlines = document.getElementsByClassName("offline");
-    for (var i = 0; offlines[i]; i++) {
-      //offlines[i].style.visibility = 'visible';
-      offlines[i].style.display = 'block';
-      //document.getElementsByClassName("offline").style.visibility = 'visible';
-    }
-    
     var invalidUsers = document.getElementsByClassName("invalidUser");
-    for (var i = 0; invalidUsers[i]; i++) {
-      //invalidUsers[i].style.visibility = 'visible';
-      invalidUsers[i].style.display = 'block';
-      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
-    }
-    
-  },
-  displayOnlineUsers: function(){
-     //console.log( document.querySelectorAll(".online"));
-    var onlines = document.getElementsByClassName("online");
+
     for (var i = 0; onlines[i]; i++) {
-      //onlines[i].style.visibility = 'visible';
-       onlines[i].style.display = 'block';
-      //online.forEach(function(element){element.style.visibility = 'visible';});
+     onlines[i].style.display = (filter === 'all' || filter == 'online') ? "block": "none";
     }
-    
-    var offlines = document.getElementsByClassName("offline");
     for (var i = 0; offlines[i]; i++) {
-      //offlines[i].style.visibility = 'hidden';
-        offlines[i].style.display = 'none';
-      //document.getElementsByClassName("offline").style.visibility = 'visible';
+       offlines[i].style.display = (filter === 'all' || filter == 'offline') ? "block": "none";
     }
-    
-    var invalidUsers = document.getElementsByClassName("invalidUser");
     for (var i = 0; invalidUsers[i]; i++) {
-     // invalidUsers[i].style.visibility = 'hidden';
-       invalidUsers[i].style.display = 'none';
-      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
+      invalidUsers[i].style.display = (filter === 'all') ? "block": "none";
     }
-  },
-  displayOfflineUsers: function(){
-    //console.log( document.querySelectorAll(".online"));
-    var onlines = document.getElementsByClassName("online");
-    for (var i = 0; onlines[i]; i++) {
-      onlines[i].style.display= 'none';
-      //online.forEach(function(element){element.style.visibility = 'visible';});
+    /* Another method to iterate  over an html collection
+      //https://imbuzu.wordpress.com/2014/02/01/iterating-over-an-htmlcollection
+
+    iterateCollection(onlines)(function(node, i) {
+         node.style.display = (filter === 'all' || filter == 'online') ? "block": "none";
+    });
+
+    function iterateCollection (collection) {
+      return function(f) {
+      for(var i = 0; collection[i]; i++) {
+      f(collection[i], i);
     }
-    
-    var offlines = document.getElementsByClassName("offline");
-    for (var i = 0; offlines[i]; i++) {
-        offlines[i].style.display= 'block';
-     // offlines[i].style.visibility = 'visible';
-      //document.getElementsByClassName("offline").style.visibility = 'visible';
     }
-    
-    var invalidUsers = document.getElementsByClassName("invalidUser");
-    for (var i = 0; invalidUsers[i]; i++) {
-      //invalidUsers[i].style.visibility = 'hidden';
-      invalidUsers[i].style.display= 'none';
-      //document.getElementsByClassName("invalidUser").style.visibility = 'visible';
-    }
-  },
-  
-  
-  clearList: function(){
-  document.getElementById("pageList").innerHTML='';
-  },
-  
-  setUpEventListeners: function(){
-    //create an event listener for when the user submits a word to search
-    /*document.getElementById("searchForm").addEventListener("click", function(event){
-      event.preventDefault(); //prevents from refreshing the page
-      var searchInput = document.getElementById("searchInput").value;
-      controller.search(searchInput);  
-      */
+  }
+  */
+},
+setUpEventListeners: function(){
      document.getElementById("showAllBtn").addEventListener("click", function(){
-      var currentButtonSelection = document.getElementById("currentButtonSelection");
-       currentButtonSelection.innerHTML = "Show All Users";
-       view.displayAllUsers();
+      view.filterUsers("all");
         });
     document.getElementById("showOnlineBtn").addEventListener("click", function(){
-      var currentButtonSelection = document.getElementById("currentButtonSelection");
-       currentButtonSelection.innerHTML = "Show Online Users";
-       view.displayOnlineUsers();
+      view.filterUsers("online");
        });
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
-      var currentButtonSelection = document.getElementById("currentButtonSelection");
-      currentButtonSelection.innerHTML = "Show Offline Users";
-      view.displayOfflineUsers();
-       
+      view.filterUsers("offline");
     });
   }
 };
