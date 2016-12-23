@@ -1,0 +1,108 @@
+/*http://angrytools.com/gradient/*/
+/* https://codepen.io/themalni/full/jVLmQR/ */
+
+body{
+ background-color: #6441a4;
+ font-family: 'Play', sans-serif; 
+ margin: 0;
+ 
+}
+
+.container{
+  text-align: center;
+  margin: auto;
+  color: white;
+  width: 100%;
+}
+
+.header{
+  background-color: white;
+  font-size: 18px;
+  
+}
+
+.header > img{
+  height: 100px;
+  width: 300px;
+  padding-top: 2%;
+  fill: white;
+}
+
+#title{
+  color: #6441a4;
+}
+
+.well{
+  width: 90%;
+  margin: auto;
+}
+
+
+
+
+#userList{
+  margin-bottom: 50px;
+  margin:auto;
+  list-style:none;
+  padding-left:0 !important;
+}
+
+
+li{
+  width: 30%;
+  float: left;
+  height: 200px;
+  text-align: left;
+  border-style: solid;
+  border-color: #7d5bbe;
+  border-width: thick;
+  margin-right: 2%;
+  margin-top: 2%;
+  padding: 10px 0px;
+ /*box-shadow: 10px 10px 10px 10px gray;*/
+}
+
+li>p{
+  color:white;
+  word-wrap: break-word;
+}
+
+a{
+  color: #D1B367;
+  color: white;
+}
+a:link {
+    text-decoration: none;
+}
+
+
+.centerImage{
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+li > img{
+  width: 60px;
+  height: 60px;
+ position: relative;
+  /*filter: grayscale(100%);*/
+ /* filter: sepia(1); */
+}
+
+img:hover{ 
+   filter: sepia(0);
+}
+
+
+button{
+  color: white;
+  font-size: 14px;
+  width: 32%;
+  margin-right: 1%;
+  padding: 10px 0px;
+  background-color: #7d5bbe;
+  cursor:pointer;
+}
+
