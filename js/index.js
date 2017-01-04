@@ -144,6 +144,9 @@ var view = {
         var userLi = document.createElement("li");
         userLi.className = (user.online) ? "online":"offline";
         
+        var newDiv = document.createElement("div");
+        newDiv.className = 'meta';
+        
         var img = document.createElement("img");
         img.src = user.small_logo;
         
@@ -163,9 +166,17 @@ var view = {
         // paragraph.textContent = user.small_logo;
         userUl.appendChild(anchor);
         anchor.appendChild(userLi);
+        /*
         userLi.appendChild(img);
         userLi.appendChild(h3);
         userLi.appendChild(paragraph);
+        */
+        userLi.appendChild(newDiv);
+        newDiv.appendChild(img);
+        newDiv.appendChild(h3);
+        newDiv.appendChild(paragraph);
+        
+        
       }
       else{
         var userLi = document.createElement("li");

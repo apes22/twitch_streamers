@@ -84,12 +84,17 @@ a:link {
 }
 
 
-li > img{
+.meta > img{
   width: 60px;
   height: 60px;
   position: relative;
   /*filter: grayscale(100%);*/
  /* filter: sepia(1); */
+}
+
+li>h3{
+
+  
 }
 
 img:hover{ 
@@ -109,5 +114,19 @@ button{
   background-color: #7d5bbe;
   cursor:pointer;
 }
+
+.online>.meta>p{
+  color: green;
+}
+
+.offline>.meta>p{
+  color: red;
+}
+
+.invalidUser>p{
+  color: gray;
+}
+
+
 
 
