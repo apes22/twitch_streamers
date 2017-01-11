@@ -31,39 +31,61 @@ body{
 }
 
 .well{
+  max-width: 1000px;
   width: 90%;
   margin: auto;
-  background-color: blue;  
 }
 
-#userList{
+button{
+  color: white;
+  font-size: 14px;
+  width: 32%;
+  padding: 10px 0px;
+  background-color: #7d5bbe;
+  cursor:pointer;
+  margin-right: 2%;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: thin;
+  float: left;
+}
+
+button:nth-child(3n) {
+ margin-right: 0 !important;
+}
+
+#channelsList{
   margin-bottom: 50px;
   margin:auto;
   list-style:none;
   padding-left:0 !important;
+  display: -webkit-flex; /* Safari */
+  -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+  display: flex !important;   
+  flex-wrap: wrap;
+  clear: left;  
 }
 
-
-li{
-  /* Two have two equal pins in a row
-  width: 49%;
-   margin-right: 1%;
-  */
-  
-  width: 33.333%;
-  /*margin-right: 3%;*/
+.single_channel{
+  width: 32%;
+  margin-right: 2%;
   float:left;
-  text-align: left;
-  height: 200px;
+  height: 250px;
   margin-top: 2%;
   text-align: left;
   border-style: solid;
   border-color: #7d5bbe;
   border-width: thick;
   box-sizing: border-box;
+  position: relative;
+  background-color: #7d5bbe;
 }
 
-li>p{
+.single_channel:nth-child(3n) {
+ margin-right: 0 !important;
+}
+
+.user_name{
   color:white;
   word-wrap: break-word;
 }
@@ -76,57 +98,76 @@ a:link {
     text-decoration: none;
 }
 
-
-.centerImage{
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+.channel_prev-img{
+    width: 100%;
+    height: 75%;
 }
 
-
-.meta > img{
-  width: 60px;
-  height: 60px;
-  position: relative;
-  /*filter: grayscale(100%);*/
- /* filter: sepia(1); */
-}
-
-li>h3{
-
-  
-}
-
-img:hover{ 
-   filter: sepia(0);
-}
-
-#nav{
- color: blue;
-}
-
-button{
-  color: white;
-  float:left;
-  font-size: 14px;
-  width: 33.333333%;
-  padding: 10px 0px;
+.user_info{
   background-color: #7d5bbe;
-  cursor:pointer;
+  margin-top: -1%;
+  height: 25%;
+  position: relative;
 }
 
-.online>.meta>p{
+.user_img{
+  width: 35px;
+  height: 35px;
+  margin-right: 5px;
+  padding-top: 5px;
+}
+
+.user_name, .status_offline, .status_online, .status_invalid{
+ position: absolute;
+ top:30%;
+}
+
+.status_offline, .status_online, .status_invalid{
+  right:0;
+}
+
+.status_online{
   color: green;
 }
 
-.offline>.meta>p{
+.status_offline{
   color: red;
 }
 
-.invalidUser>p{
+.status_invalid{
   color: gray;
 }
 
+.cover-overlay{
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  width: 100%;
+  height: 80%;
+  background: #7d5bbe;
+}
 
+@media only screen and (max-width: 830px) {
+  .single_channel{
+    width: 49%;
+    height: 200px;
+  } 
+  
+  .single_channel:nth-child(2n) {
+    margin-right: 0;
+  }
+  
+  .single_channel:nth-child(3n) {
+    margin-right: 2% !important;
+  }
+}
 
-
+@media only screen and (max-width: 550px) {
+  .single_channel{
+    width: 100%;
+    min-height: 100px;
+    margin-right: 0;
+  }

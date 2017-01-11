@@ -133,63 +133,101 @@ getActiveUserStreams: function(){
 var view = {
   //show pages in an unordered list
   displayUsers: function(){
-    var userUl = document.getElementById("userList");
-    userUl.innerHTML = "";
+    var channelUl = document.getElementById("channelsList");
+    channelUl.innerHTML = "";
+    
     userList.users.forEach(function(user){
       if (user.active){
+        console.log(user.name);
+        //creates new list item element
+        var channel_Li = document.createElement("li");
+        channel_Li.className = "single_channel"
+        var status = (user.online) ? "online":"offline";
+        channel_Li.classList.add(status);
+        channelUl.appendChild(channel_Li);
+
+        //creates new anchor tag element
         var anchor = document.createElement("a");
         anchor.href = user.channel_url;
         anchor.target = "_blank";
         
-        var userLi = document.createElement("li");
-        userLi.className = (user.online) ? "online":"offline";
-        
-        var newDiv = document.createElement("div");
-        newDiv.className = 'meta';
-        
-        var img = document.createElement("img");
-        img.src = user.small_logo;
-        
-        var h3 = document.createElement("h3");
-        h3.textContent = user.display_name.toUpperCase();
-        
-        var paragraph = document.createElement("p");
-        paragraph.textContent = (user.online) ? "online":"offline";
-        
-       userLi.classList.add("centerImage");
+        //creates image element for channel preview 
+        var channel_prev_img = document.createElement("img");
+        channel_prev_img.className = "channel_prev-img";
         if (user.online){
-          userLi.style.backgroundImage = "url(" + user.preview_banner + ")";
+           channel_prev_img.src = user.preview_banner;
         }
         else if (user.active && user.profile_banner !== null){
-        userLi.style.backgroundImage = "url(" + user.profile_banner + ")";
+          channel_prev_img.src = user.profile_banner;
         }
-        // paragraph.textContent = user.small_logo;
-        userUl.appendChild(anchor);
-        anchor.appendChild(userLi);
-        /*
-        userLi.appendChild(img);
-        userLi.appendChild(h3);
-        userLi.appendChild(paragraph);
-        */
-        userLi.appendChild(newDiv);
-        newDiv.appendChild(img);
-        newDiv.appendChild(h3);
-        newDiv.appendChild(paragraph);
+
+        channel_Li.appendChild(anchor);
+        anchor.appendChild(channel_prev_img);
+
+        //creates a cover-overlay div
+        var overlayDiv = document.createElement("div");
+        overlayDiv.className = "cover-overlay";
+        if (user.online){
+              var h4 = document.createElement("h4");
+              h4.className = "streaming_details";
+              h4.innerHTML = user.details;
+              overlayDiv.appendChild(h4);
+        }
+        anchor.appendChild(overlayDiv);
+
+        //creates user info div element
+        var newInfoDiv = document.createElement("div");
+        newInfoDiv.className = 'user_info';
+        anchor.appendChild(newInfoDiv);
+
+        var user_img = document.createElement("img");
+        user_img.src = user.small_logo;
+        user_img.className = "user_img";
+        newInfoDiv.appendChild(user_img); 
         
+        
+        var user_name = document.createElement("span");
+        user_name.className = "user_name";
+        user_name.textContent = user.display_name.toUpperCase();
+        newInfoDiv.appendChild(user_name); 
+        
+        var status = document.createElement("span");
+        status.className = (user.online) ? "status_online":"status_offline";
+        status.textContent = (user.online) ? "online":"offline";
+        newInfoDiv.appendChild(status);   
         
       }
       else{
-        var userLi = document.createElement("li");
-        var h3 = document.createElement("h3"); 
-        var paragraph = document.createElement("p");
-        paragraph.textContent = "does not exist";
-        userLi.className = "invalidUser";
-        h3.textContent = user.name.toUpperCase();
-        userUl.appendChild(userLi);
-        userLi.appendChild(h3); 
-        userLi.appendChild(paragraph);
+        var channel_Li = document.createElement("li");
+        channel_Li.className = "single_channel";
+        channel_Li.classList.add("invalidUser");
+        channelUl.appendChild(channel_Li);
+
+        var channel_prev_img = document.createElement("img");
+        channel_prev_img.className = "channel_prev-img";
+         channel_prev_img.src = "";
+        channel_Li.appendChild(channel_prev_img); 
+
+        var newInfoDiv = document.createElement("div");
+        newInfoDiv.className = 'user_info';
+        channel_Li.appendChild(newInfoDiv);
+        
+        var user_img = document.createElement("img");
+        user_img.className = "user_img";
+        newInfoDiv.appendChild(user_img); 
+
+        var user_name = document.createElement("span");
+        user_name.className = "user_name";
+        user_name.textContent = user.name.toUpperCase();
+        newInfoDiv.appendChild(user_name); 
+        
+        var status = document.createElement("span");
+        status.className = "status_invalid";
+        status.textContent = "does not exist";
+        newInfoDiv.appendChild(status);   
       }
     });
+    this.addEventListeners("cover-overlay");
   },
 //went from 60 lines to 13 woot woot 
 filterUsers: function(filter){
@@ -223,6 +261,24 @@ filterUsers: function(filter){
   }
   */
 },
+
+addEventListeners: function(className){
+   var classList = document.getElementsByClassName(className);
+
+   for (var i = 0; i < classList.length; i++) {
+    classList[i].addEventListener("mouseover", function(){
+    console.log("Currently MouseOver")
+    this.style.opacity = 0.8;
+        });
+  
+   classList[i].addEventListener("mouseleave", function(){
+ console.log("Currently MouseOver")
+  this.style.opacity = 0;
+        });
+}
+
+},
+
 setUpEventListeners: function(){
      document.getElementById("showAllBtn").addEventListener("click", function(){
       view.filterUsers("all");
@@ -233,6 +289,7 @@ setUpEventListeners: function(){
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
       view.filterUsers("offline");
     });
+  
   }
 };
 
