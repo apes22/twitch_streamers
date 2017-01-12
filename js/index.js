@@ -4,7 +4,7 @@
 //After all the channel requests have been completed, we create a string of active twitch users, and make a get stream request.
 //if the user is part of the returned stream array, then we gather the current stream info and updated the user to be online.
 //else we get the user's live stream  detail  
-var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "maribel", "fad", "behkuhtv"];
+var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "maribel", "fad", "behkuhtv", "food"];
 
 //model
 var userList = {
@@ -138,8 +138,6 @@ var view = {
         //creates new list item element
         var channel_Li = document.createElement("li");
         channel_Li.className = "single_channel"
-        var status = (user.online) ? "online":"offline";
-        channel_Li.classList.add(status);
         channelUl.appendChild(channel_Li);
 
         //creates new anchor tag element
@@ -163,6 +161,8 @@ var view = {
         //creates a cover-overlay div
         var overlayDiv = document.createElement("div");
         overlayDiv.className = "cover-overlay";
+        var status = (user.online) ? "online":"offline";
+        overlayDiv.classList.add(status);
         if (user.online){
               var h4 = document.createElement("h4");
               h4.className = "streaming_details";
@@ -196,7 +196,7 @@ var view = {
       else{
         var channel_Li = document.createElement("li");
         channel_Li.className = "single_channel";
-        channel_Li.classList.add("invalidUser");
+        /*channel_Li.classList.add("invalidUser");*/
         channelUl.appendChild(channel_Li);
 
         var channel_prev_img = document.createElement("img");
@@ -228,7 +228,7 @@ var view = {
     this.addEventListeners("cover-overlay");
   },
 //went from 60 lines to 13 woot woot 
-filterUsers: function(filter){
+/*filterUsers: function(filter){
     //retrieve html collections for the following classes: online, offline, invalidUser
     var onlines = document.getElementsByClassName("online");
     var offlines = document.getElementsByClassName("offline");
@@ -257,8 +257,9 @@ filterUsers: function(filter){
     }
     }
   }
-  */
+  
 },
+*/
 
 addEventListeners: function(className){
    var classList = document.getElementsByClassName(className);
