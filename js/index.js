@@ -23,14 +23,12 @@ var userList = {
       online: false,
       small_logo: small_logo,
       profile_banner: profile_banner,
-      //large_logo: large_logo,
       channel_url: channel_url
     });
   },
   addLiveStreamer: function(name, details, preview_banner){
     //find the user in the array and add details property
     var streamerIndex = this.findUser(name);
-   // console.log("streamerIndex is: ", streamerIndex);
     if(streamerIndex != -1){
      this.users[streamerIndex].online = true;
      this.users[streamerIndex].details = details;
@@ -81,8 +79,7 @@ var controller = {
         userList.addLiveStreamer(obj.channel.name, obj.channel.status, obj.preview.medium);
         console.log(obj.preview.medium);
       });
-      view.displayUsers("all");
-      console.log(userList.users);
+      view.displayUsers(userList.users);
     }else{
        // We reached our target server, but it returned an error   
     }
@@ -132,13 +129,12 @@ getActiveUserStreams: function(){
 //view
 var view = {
   //show pages in an unordered list
-  displayUsers: function(){
+  displayUsers: function(users){
     var channelUl = document.getElementById("channelsList");
     channelUl.innerHTML = "";
     
-    userList.users.forEach(function(user){
+    users.forEach(function(user){
       if (user.active){
-        console.log(user.name);
         //creates new list item element
         var channel_Li = document.createElement("li");
         channel_Li.className = "single_channel"
@@ -213,7 +209,9 @@ var view = {
         channel_Li.appendChild(newInfoDiv);
         
         var user_img = document.createElement("img");
+        user_img.src = "http://2am.ninja/twitch/img/unknown.png";
         user_img.className = "user_img";
+        
         newInfoDiv.appendChild(user_img); 
 
         var user_name = document.createElement("span");
@@ -267,12 +265,10 @@ addEventListeners: function(className){
 
    for (var i = 0; i < classList.length; i++) {
     classList[i].addEventListener("mouseover", function(){
-    console.log("Currently MouseOver")
     this.style.opacity = 0.8;
         });
   
    classList[i].addEventListener("mouseleave", function(){
- console.log("Currently MouseOver")
   this.style.opacity = 0;
         });
 }
@@ -281,14 +277,27 @@ addEventListeners: function(className){
 
 setUpEventListeners: function(){
      document.getElementById("showAllBtn").addEventListener("click", function(){
-      view.filterUsers("all");
-        });
+      //view.filterUsers("all");
+       this.displayUsers(userList.users);
+        }.bind(this));
     document.getElementById("showOnlineBtn").addEventListener("click", function(){
-      view.filterUsers("online");
-       });
+      //view.filterUsers("online");
+      //filter users that are active and online 
+      var filteredUsers = userList.users.filter(function(user){
+        return user.active && user.online;
+      });
+      console.log(filteredUsers);
+      this.displayUsers(filteredUsers);
+      
+    }.bind(this));
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
-      view.filterUsers("offline");
-    });
+      //view.filterUsers("offline");
+      var filteredUsers = userList.users.filter(function(user){
+        return (user.active && !user.online);
+      });
+      console.log(filteredUsers);
+      this.displayUsers(filteredUsers);
+    }.bind(this));
   
   }
 };

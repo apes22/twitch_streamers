@@ -50,8 +50,9 @@ button{
   float: left;
 }
 
+
 button:nth-child(3n) {
- margin-right: 0 !important;
+ margin-right: 0;
 }
 
 #channelsList{
@@ -63,14 +64,14 @@ button:nth-child(3n) {
   -webkit-flex-wrap: wrap; /* Safari 6.1+ */
   display: flex !important;   
   flex-wrap: wrap;
-  clear: left;  
+  clear: left; 
 }
 
 .single_channel{
   width: 32%;
   margin-right: 2%;
   float:left;
-  height: 250px;
+  height: 200px;
   margin-top: 2%;
   text-align: left;
   border-style: solid;
@@ -79,23 +80,31 @@ button:nth-child(3n) {
   box-sizing: border-box;
   position: relative;
   background-color: #7d5bbe;
+  background-color: #6441a4;
 }
 
 .single_channel:nth-child(3n) {
- margin-right: 0 !important;
-}
+   margin-right: 0;
+  }
+
 
 .user_name{
   color:white;
   word-wrap: break-word;
 }
 
-a{
-  color: #D1B367;
+.streaming_details{
+  margin: 5px;
   color: white;
+   word-wrap: break-word;
+ 
+ 
+ 
 }
 a:link {
     text-decoration: none;
+outline:none;
+ border:0;
 }
 
 .channel_prev-img{
@@ -156,18 +165,21 @@ a:link {
     height: 200px;
   } 
   
-  .single_channel:nth-child(2n) {
-    margin-right: 0;
+  .single_channel:nth-child(3n) {
+   margin-right: 2%;
   }
   
-  .single_channel:nth-child(3n) {
-    margin-right: 2% !important;
+  .single_channel:nth-child(2n) {
+    margin-right: 0 !important;
   }
+  
 }
 
 @media only screen and (max-width: 550px) {
   .single_channel{
     width: 100%;
     min-height: 100px;
+  }
+  .single_channel:nth-child(n) {
     margin-right: 0;
   }
