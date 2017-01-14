@@ -4,7 +4,7 @@
 //After all the channel requests have been completed, we create a string of active twitch users, and make a get stream request.
 //if the user is part of the returned stream array, then we gather the current stream info and updated the user to be online.
 //else we get the user's live stream  detail  
-var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas", "maribel", "fad", "behkuhtv", "food"];
+var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "aces_tv", "habathcx", "RobotCaleb", "noobs2ninjas", "maribel", "fad", "behkuhtv", "food"];
 
 //model
 var userList = {
@@ -40,7 +40,21 @@ var userList = {
     function isName(obj){
       return obj.name === name;
     }
-  }  
+  }, 
+  sortUsers: function(){
+    var filteredUsers = this.users.sort(function(user1, user2){
+      return user1.name.localeCompare(user2.name);
+      /*
+      if (user1.name.toLowerCase() < user2.name.toLowerCase()) {
+        return -1;
+      }
+      if (user1.name.toLowerCase() > user2.name.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+      */
+    });
+  }
 };
 
 //controller
@@ -79,6 +93,8 @@ var controller = {
         userList.addLiveStreamer(obj.channel.name, obj.channel.status, obj.preview.medium);
         console.log(obj.preview.medium);
       });
+
+      userList.sortUsers();
       view.displayUsers(userList.users);
     }else{
        // We reached our target server, but it returned an error   
@@ -277,29 +293,24 @@ addEventListeners: function(className){
 },
 
 setUpEventListeners: function(){
-     document.getElementById("showAllBtn").addEventListener("click", function(){
-      //view.filterUsers("all");
-       this.displayUsers(userList.users);
+     
+    document.getElementById("showAllBtn").addEventListener("click", function(){
+      this.displayUsers(userList.users);
         }.bind(this));
+    
     document.getElementById("showOnlineBtn").addEventListener("click", function(){
-      //view.filterUsers("online");
-      //filter users that are active and online 
-      var filteredUsers = userList.users.filter(function(user){
-        return user.active && user.online;
-      });
-      console.log(filteredUsers);
-      this.displayUsers(filteredUsers);
-      
-    }.bind(this));
+        var filteredUsers = userList.users.filter(function(user){
+          return user.active && user.online;
+        });
+        this.displayUsers(filteredUsers);
+      }.bind(this));
+    
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
-      //view.filterUsers("offline");
       var filteredUsers = userList.users.filter(function(user){
         return (user.active && !user.online);
       });
-      console.log(filteredUsers);
       this.displayUsers(filteredUsers);
     }.bind(this));
-  
   }
 };
 

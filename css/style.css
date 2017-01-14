@@ -36,6 +36,14 @@ body{
   margin: auto;
 }
 
+#nav{
+  height: 50px;
+  max-width: 1000px;
+  width: 90%;
+  margin: auto;
+  
+}
+
 button{
   color: white;
   font-size: 14px;
@@ -44,18 +52,34 @@ button{
   background-color: #7d5bbe;
   cursor:pointer;
   margin-right: 2%;
-  box-sizing: border-box;
+  box-sizing: border-box; 
   border-style: solid;
-  border-width: thin;
-  border-color: white;
+  border-width: medium;
+  border-color: #7d5bbe;
   float: left;
 }
 
-#showOnlineBtn:hover{
-  border-color: green !important;
+#showAllBtn:hover{}
+
+#showAllBtn:focus, #showAllBtn:active{
+  border-color: #76daff; /*#337ab7;*/
 }
 
+#showOnlineBtn:hover{}
 
+#showOnlineBtn:focus{
+  border-color: green;
+}
+
+#showOfflineBtn:hover{} 
+
+#showOfflineBtn:focus{
+  border-color: red;
+}
+
+#showAllBtn:focus, #showOnlineBtn:focus, #showOfflineBtn:focus{
+  outline: 0;
+}
 
 
 button:nth-child(3n) {
@@ -63,6 +87,7 @@ button:nth-child(3n) {
 }
 
 #channelsList{
+  padding-top: 10px;
   margin-bottom: 50px;
   margin:auto;
   list-style:none;
