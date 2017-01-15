@@ -161,14 +161,23 @@ var view = {
         anchor.href = user.channel_url;
         anchor.target = "_blank";
         
-        //creates image element for channel preview 
-        var channel_prev_img = document.createElement("img");
+        //create channel_prev-img div element
+        var channel_prev_img = document.createElement("div");
         channel_prev_img.className = "channel_prev-img";
+
+        
         if (user.online){
-           channel_prev_img.src = user.preview_banner;
+          var prev_img_src = document.createElement("img");
+          prev_img_src.className = "prev_img_src";
+          prev_img_src.src = user.preview_banner;
+          channel_prev_img.appendChild(prev_img_src);
+
         }
         else if (user.active && user.profile_banner !== null){
-          channel_prev_img.src = user.profile_banner;
+          var prev_img_src = document.createElement("img")
+          prev_img_src.className = "prev_img_src";
+          prev_img_src.src = user.profile_banner;
+          channel_prev_img.appendChild(prev_img_src);
         }
 
         channel_Li.appendChild(anchor);
@@ -215,9 +224,9 @@ var view = {
         /*channel_Li.classList.add("invalidUser");*/
         channelUl.appendChild(channel_Li);
 
-        var channel_prev_img = document.createElement("img");
+        //create channel_prev-img div element
+        var channel_prev_img = document.createElement("div");
         channel_prev_img.className = "channel_prev-img";
-         channel_prev_img.src = "";
         channel_Li.appendChild(channel_prev_img); 
 
         var newInfoDiv = document.createElement("div");
