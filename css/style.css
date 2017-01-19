@@ -1,10 +1,14 @@
 /*http://angrytools.com/gradient/*/
 /* https://codepen.io/themalni/full/jVLmQR/ */
 
+html,
 body{
  background-color: #6441a4;
  font-family: 'Play', sans-serif; 
  margin: 0;
+ /* to keep footer at bottom of page*/
+ padding:0;
+ height:100%;
 }
 
 .container{
@@ -12,6 +16,10 @@ body{
   margin: auto;
   color: white;
   width: 100%;
+   /* to keep footer at bottom of page*/
+  min-height:100%;
+  position:relative;
+  padding-bottom: 150px;
 }
 
 .header{
@@ -19,16 +27,17 @@ body{
   font-size: 18px;
 }
 
+
 .header_img{
   height: 100px;
   width: 300px;
   padding-top: 2%;
-  fill: white;
 }
 
 #title{
   color: #6441a4;
 }
+
 
 .well{
   max-width: 1000px;
@@ -40,47 +49,34 @@ body{
   height: 50px;
   max-width: 1000px;
   width: 90%;
-  margin: auto;
-  
+  margin: auto; 
 }
 
 button{
   color: white;
   font-size: 14px;
   width: 32%;
-  padding: 10px 0px;
+  padding: 12px 0px;
   background-color: #7d5bbe;
+  opacity: 1;
   cursor:pointer;
   margin-right: 2%;
-  box-sizing: border-box; 
-  border-style: solid;
-  border-width: medium;
-  border-color: #7d5bbe;
+  border: 0;
   float: left;
+  -webkit-appearance: none;
 }
 
-#showAllBtn:hover{}
-
-#showAllBtn:focus, #showAllBtn:active{
-  border-color: #76daff; /*#337ab7;*/
+#showAllBtn{
+  background-color:#76daff;
 }
 
-#showOnlineBtn:hover{}
-
-#showOnlineBtn:focus{
-  border-color: green;
-}
-
-#showOfflineBtn:hover{} 
-
-#showOfflineBtn:focus{
-  border-color: red;
-}
-
-#showAllBtn:focus, #showOnlineBtn:focus, #showOfflineBtn:focus{
+button:focus{
   outline: 0;
 }
 
+button::-moz-focus-inner {
+  border: 0;
+}
 
 button:nth-child(3n) {
  margin-right: 0;
@@ -88,7 +84,6 @@ button:nth-child(3n) {
 
 #channelsList{
   padding-top: 10px;
-  margin-bottom: 50px;
   margin:auto;
   list-style:none;
   padding-left:0 !important;
@@ -111,8 +106,6 @@ button:nth-child(3n) {
   border-width: thick;
   box-sizing: border-box;
   position: relative;
-  background-color: #7d5bbe;
-  background-color: #6441a4;
 }
 
 .single_channel:nth-child(3n) {
@@ -120,6 +113,7 @@ button:nth-child(3n) {
   }
 
 .cover-overlay{
+  background: #7d5bbe;
   position: absolute;
   margin: 0;
   padding: 0;
@@ -131,7 +125,7 @@ button:nth-child(3n) {
   opacity: 0;
   width: 100%;
   height: 75%;
-  background: #7d5bbe;
+ 
 }
 
 .cover-overlay.online{
@@ -206,8 +200,24 @@ a:link {
   color: gray;
 }
 
+/*Inspired by http://www.cssreset.com/demos/layouts/how-to-keep-footer-at-bottom-of-page-with-css/ */
+#footer {
+  background: white; 
+  color: #7d5bbe;
+  font-size: 18px;
+  width:100%;
+  height:40px;
+  padding: 30px 0;
+  position:absolute;
+  text-align: center;
+  bottom:0;
+  left:0;
+}
 
-
+#footer  a{
+    color: #7d5bbe;
+    font-weight: bold !important;
+  };
 
 
 @media only screen and (max-width: 830px) {
