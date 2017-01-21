@@ -252,28 +252,20 @@ addEventListeners: function(className){
 setUpEventListeners: function(){
 
     document.getElementById("showAllBtn").addEventListener("click", function(){
-      view.clearButtonsColor();
-      document.getElementById("showAllBtn").style.backgroundColor = '#76daff';
-      document.getElementById("showAllBtn").style.opacity = 0.8;
+     this.updateActiveButton("showAllBtn");
       this.displayUsers(userList.users);
         }.bind(this));
     
-    document.getElementById("showOnlineBtn").addEventListener("click", function(){
-       view.clearButtonsColor();
-      document.getElementById("showOnlineBtn").style.backgroundColor = 'green';
-     document.getElementById("showOnlineBtn").style.opacity = 0.8;
-     
+     document.getElementById("showOnlineBtn").addEventListener("click", function(){
+       this.updateActiveButton("showOnlineBtn");
         var filteredUsers = userList.users.filter(function(user){
-          return user.active && user.online;
+          return (user.active && user.online);
         });
         this.displayUsers(filteredUsers);
       }.bind(this));
     
     document.getElementById("showOfflineBtn").addEventListener("click", function(){
-          view.clearButtonsColor();
-      document.getElementById("showOfflineBtn").style.backgroundColor = 'red';
-       document.getElementById("showOfflineBtn").style.opacity = 0.8;
-
+      this.updateActiveButton("showOfflineBtn");
       var filteredUsers = userList.users.filter(function(user){
         return (user.active && !user.online);
       });
@@ -281,15 +273,19 @@ setUpEventListeners: function(){
     }.bind(this));
   },
 
- clearButtonsColor: function(){
+ updateActiveButton: function(activeBtn){
+    var activeColor = {
+        showAllBtn:'#76daff',
+        showOnlineBtn:'green',
+        showOfflineBtn:'red'
+    };
     var buttons = document.querySelectorAll('button');
     for (var i=0; i<buttons.length;i++){
-      buttons[i].style.backgroundColor = '#7d5bbe';
-      buttons[i].style.opacity =  1;
+      buttons[i].style.backgroundColor = (buttons[i].id === activeBtn) ? activeColor[activeBtn] : '#7d5bbe';
+      buttons[i].style.opacity =  (buttons[i].id == activeBtn) ? 0.8 : 1; 
     }
  }
 };
-
 
 controller.getTwitchUsers(potentialUsers);
 view.setUpEventListeners();

@@ -217,8 +217,7 @@ a:link {
 #footer  a{
     color: #7d5bbe;
     font-weight: bold !important;
-  };
-
+ }
 
 @media only screen and (max-width: 830px) {
   .single_channel{
@@ -233,7 +232,6 @@ a:link {
   .single_channel:nth-child(2n) {
     margin-right: 0 !important;
   }
-  
 }
 
 @media only screen and (max-width: 550px) {
