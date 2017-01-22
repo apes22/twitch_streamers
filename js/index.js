@@ -1,4 +1,4 @@
-var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "aces_tv", "habathcx", "RobotCaleb", "noobs2ninjas", "fad", "behkuhtv", "food"];
+var potentialUsers=["freecodecamp", "ESL_SC2", "OgamingSC2", "cretetion", "aces_tv", "RobotCaleb", "noobs2ninjas", "xaled", "behkuhtv", "food","steveaoki"];
 
 //model
 var userList = {
@@ -9,6 +9,7 @@ var userList = {
       active: false
     });
   },
+
   addActiveUser: function(name, display_name, small_logo, profile_banner, channel_url){
     this.users.push({
       name: name,
@@ -20,6 +21,7 @@ var userList = {
       channel_url: channel_url
     });
   },
+
   addLiveStreamer: function(name, details, preview_banner){
     //find the user in the array and add details property
     var streamerIndex = this.findUser(name);
@@ -29,12 +31,14 @@ var userList = {
      this.users[streamerIndex].preview_banner = preview_banner;
     }
   },
+
   findUser: function(name){
     return this.users.findIndex(isName);      
     function isName(obj){
       return obj.name === name;
     }
   }, 
+
   sortUsers: function(){
     var filteredUsers = this.users.sort(function(user1, user2){
       return user1.name.toLowerCase().localeCompare(user2.name.toLowerCase());
@@ -66,6 +70,7 @@ var controller = {
     request.send();
   });
   },
+
   getStreams: function(users){
     var url = 'https://api.twitch.tv/kraken/streams?channel=' + users + '&client_id=1fqby4hqnlm4h1t0ze5o5kgsn10k1z';
     var request = new XMLHttpRequest();
@@ -88,6 +93,7 @@ var controller = {
     };
     request.send();
   },
+
   getTwitchUsers: function(potentialUsers){
     var requests = [];
     potentialUsers.forEach(function (userName){
@@ -112,130 +118,131 @@ var controller = {
   // One or more promises was rejected
   }.bind(this)); 
 },
-getActiveUserStreams: function(){
-  var activeUsers = '';
-  userList.users.forEach(function(user){
-    if (user.active){
-      activeUsers += user.name + ',';
-    }
-  });
-  this.getStreams(activeUsers);
+
+  getActiveUserStreams: function(){
+    var activeUsers = '';
+    userList.users.forEach(function(user){
+      if (user.active){
+        activeUsers += user.name + ',';
+      }
+    });
+    this.getStreams(activeUsers);
   }
 };
 
 //view
 var view = {
-  //show pages in an unordered list
-  displayUsers: function(users){
-    var channelUl = document.getElementById("channelsList");
-    channelUl.innerHTML = ""; //clears current list
-    
-    users.forEach(function(user){
+  //show users in an unordered list
+displayUsers: function(users){
+  //clears current list
+  var channelUl = document.getElementById("channelsList");
+  channelUl.innerHTML = ""; 
 
-       //Creates a new list item element
-        var channel_Li = document.createElement("li");
-        channel_Li.className = "single_channel"
-        channelUl.appendChild(channel_Li);
+  users.forEach(function(user){
+     //Creates a new list item element
+      var channel_Li = document.createElement("li");
+      channel_Li.className = "single_channel"
+      channelUl.appendChild(channel_Li);
 
+      if (user.active){
+        var anchor = this.createAnchor(user.channel_url);
+        channel_Li.appendChild(anchor);
+       
+        var channel_prev_img = this.createPreviewImg(user.active, user.online, user.profile_banner, user.preview_banner);
+        anchor.appendChild(channel_prev_img);
 
-        if (user.active){
-          //Creates new anchor tag element
-          var anchor = document.createElement("a");
-          anchor.href = user.channel_url;
-          anchor.target = "_blank";
-          channel_Li.appendChild(anchor);
-        
-          //Creates a channel_prev-img div element
-          var channel_prev_img = document.createElement("div");
-          channel_prev_img.className = "channel_prev-img";
+        var overlayDiv = this.createOverlay(user.online, user.details);
+        anchor.appendChild(overlayDiv);
 
-          
-           //Get source of channel preview image
-          if (user.online){
-            var prev_img_src = document.createElement("img");
-            prev_img_src.className = "prev_img_src";
-            prev_img_src.src = user.preview_banner;
-            channel_prev_img.appendChild(prev_img_src);
-            
-          }else if (user.active && user.profile_banner !== null){
-            var prev_img_src = document.createElement("img");
-            prev_img_src.className = "prev_img_src";
-            prev_img_src.src = user.profile_banner;
-            channel_prev_img.appendChild(prev_img_src);
-          }
-          
-          anchor.appendChild(channel_prev_img);
+        var infoDiv = this.createInfoDiv(user.small_logo, user.display_name, user.active, user.online);
+        anchor.appendChild(infoDiv);
 
-          //Creates a cover-overlay div
-          var overlayDiv = document.createElement("div");
-          overlayDiv.className = "cover-overlay";
-          var status = (user.online) ? "online":"offline";
-          overlayDiv.classList.add(status);
-          if (user.online){
-                var h4 = document.createElement("h4");
-                h4.className = "streaming_details";
-                h4.innerHTML = user.details;
-                overlayDiv.appendChild(h4);
-          }
-          anchor.appendChild(overlayDiv);
-
-          //Creates a user info div element
-          var newInfoDiv = document.createElement("div");
-          newInfoDiv.className = 'user_info';
-          anchor.appendChild(newInfoDiv);
-
-          //Creates small logo image element
-          var user_img = document.createElement("img");
-          user_img.src = user.small_logo;
-          user_img.className = "user_img";
-          newInfoDiv.appendChild(user_img); 
-          
-          //Create username element
-          var user_name = document.createElement("span");
-          user_name.className = "user_name";
-          user_name.textContent = user.display_name.toUpperCase();
-          newInfoDiv.appendChild(user_name); 
-          
-         
-          
       }else{
-        //create channel_prev-img div element
-        var channel_prev_img = document.createElement("div");
-        channel_prev_img.className = "channel_prev-img";
+        var channel_prev_img = this.createPreviewImg(user.active);
         channel_Li.appendChild(channel_prev_img); 
 
-        var newInfoDiv = document.createElement("div");
-        newInfoDiv.className = 'user_info';
-        channel_Li.appendChild(newInfoDiv);
-        
-        var user_img = document.createElement("img");
-        user_img.src = "http://2am.ninja/twitch/img/unknown.png";
-        user_img.className = "user_img";
-        newInfoDiv.appendChild(user_img); 
+        var unknown_logo = "http://2am.ninja/twitch/img/unknown.png";
+        var infoDiv = this.createInfoDiv(unknown_logo, user.name);
+        channel_Li.appendChild(infoDiv);    
+      }  
+  }, this);
+  this.addEventListener("cover-overlay");
+},
 
-        var user_name = document.createElement("span");
-        user_name.className = "user_name";
-        user_name.textContent = user.name.toUpperCase();
-        newInfoDiv.appendChild(user_name); 
-          
+//Creates an anchor element
+createAnchor: function(url){
+   
+   var a = document.createElement("a");
+   a.href = url;
+   a.target = "_blank";
+   return a;
+},
+//Creates a channel_prev-img div element
+createPreviewImg: function(isActive, isOnline, profileBanner, previewBanner){
+  var prev_img = document.createElement("div");
+  prev_img.className = "channel_prev-img";     
+
+  if (isActive){ 
+    var prev_img_src = document.createElement("img");
+    prev_img_src.className = "prev_img_src";
+    if (isOnline){
+      prev_img_src.src = previewBanner;
+      prev_img.appendChild(prev_img_src);
+      }else if(profileBanner !== null){
+        prev_img_src.src = profileBanner;
+        prev_img.appendChild(prev_img_src);
       }
-       //Creates status element 
-          var status = document.createElement("span");
-          if (user.active){
-           status.className = (user.online) ? "status_online":"status_offline";
-           status.textContent = (user.online) ? "online":"offline";
-          }
-          else{
-            status.className = "status_invalid";
-            status.textContent = "does not exist";
-          }
-          newInfoDiv.appendChild(status);   
+    }
+  return prev_img;     
+},
 
-    });
-    this.addEventListeners("cover-overlay");
-  },
+//Creates an overlay
+createOverlay: function(isOnline, details){
+  var overlay =  document.createElement("div");
+  overlay.className = "cover-overlay";
 
-addEventListeners: function(className){
+  var status = (isOnline) ? "online":"offline";
+  overlay.classList.add(status);
+  if (isOnline){
+      var h4 = document.createElement("h4");
+      h4.className = "streaming_details";
+      h4.innerHTML = details;
+      overlay.appendChild(h4);
+  }
+  return overlay;
+},
+
+createInfoDiv: function(logo, displayName, isActive, isOnline){ 
+  var info = document.createElement("div");
+  info.className = 'user_info';
+
+  //Creates small logo image element
+  var user_img = document.createElement("img");
+  user_img.src = logo;
+  user_img.className = "user_img";
+  info.appendChild(user_img); 
+
+  //Create username span element
+  var user_name = document.createElement("span");
+  user_name.className = "user_name";
+  user_name.textContent = displayName.toUpperCase();
+  info.appendChild(user_name); 
+
+  var status = document.createElement("span");
+  if (isActive){
+    status.className = (isOnline) ? "status_online":"status_offline";
+    status.textContent = (isOnline) ? "online":"offline";
+  }
+  else{
+    status.className = "status_invalid";
+    status.textContent = "does not exist";
+  }
+  info.appendChild(status);  
+
+  return info;
+},
+
+addEventListener: function(className){
    var classList = document.getElementsByClassName(className);
 
    for (var i = 0; i < classList.length; i++) {
@@ -250,41 +257,44 @@ addEventListeners: function(className){
 },
 
 setUpEventListeners: function(){
+  var showAllBtn = document.getElementById("showAllBtn");
+  var showOnlineBtn = document.getElementById("showOnlineBtn");
+  var showOfflineBtn = document.getElementById("showOfflineBtn");
 
-    document.getElementById("showAllBtn").addEventListener("click", function(){
-     this.updateActiveButton("showAllBtn");
-      this.displayUsers(userList.users);
-        }.bind(this));
-    
-     document.getElementById("showOnlineBtn").addEventListener("click", function(){
-       this.updateActiveButton("showOnlineBtn");
-        var filteredUsers = userList.users.filter(function(user){
-          return (user.active && user.online);
-        });
-        this.displayUsers(filteredUsers);
+  showAllBtn.addEventListener("click", function(){
+   this.updateActiveButton("showAllBtn");
+    this.displayUsers(userList.users);
       }.bind(this));
-    
-    document.getElementById("showOfflineBtn").addEventListener("click", function(){
-      this.updateActiveButton("showOfflineBtn");
+
+   showOnlineBtn.addEventListener("click", function(){
+     this.updateActiveButton("showOnlineBtn");
       var filteredUsers = userList.users.filter(function(user){
-        return (user.active && !user.online);
+        return (user.active && user.online);
       });
       this.displayUsers(filteredUsers);
     }.bind(this));
+
+  showOfflineBtn.addEventListener("click", function(){
+    this.updateActiveButton("showOfflineBtn");
+    var filteredUsers = userList.users.filter(function(user){
+      return (user.active && !user.online);
+    });
+    this.displayUsers(filteredUsers);
+  }.bind(this));
   },
 
- updateActiveButton: function(activeBtn){
-    var activeColor = {
-        showAllBtn:'#76daff',
-        showOnlineBtn:'green',
-        showOfflineBtn:'red'
-    };
-    var buttons = document.querySelectorAll('button');
-    for (var i=0; i<buttons.length;i++){
-      buttons[i].style.backgroundColor = (buttons[i].id === activeBtn) ? activeColor[activeBtn] : '#7d5bbe';
-      buttons[i].style.opacity =  (buttons[i].id == activeBtn) ? 0.8 : 1; 
-    }
- }
+updateActiveButton: function(activeBtn){
+  var activeColor = {
+      showAllBtn:'#76daff',
+      showOnlineBtn:'green',
+      showOfflineBtn:'red'
+  };
+  var buttons = document.querySelectorAll('button');
+  for (var i=0; i<buttons.length;i++){
+    buttons[i].style.backgroundColor = (buttons[i].id === activeBtn) ? activeColor[activeBtn] : '#7d5bbe';
+    buttons[i].style.opacity =  (buttons[i].id == activeBtn) ? 0.8 : 1; 
+  }
+  }
 };
 
 controller.getTwitchUsers(potentialUsers);
