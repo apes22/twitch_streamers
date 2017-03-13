@@ -167,6 +167,7 @@ displayUsers: function(users){
       }  
   }, this);
   this.addEventListener("cover-overlay");
+  this.showFooter();
 },
 
 //Creates an anchor element
@@ -254,6 +255,10 @@ addEventListener: function(className){
     this.style.opacity = 0;
         });
   }
+},
+  
+showFooter: function(){
+    document.getElementById("footer").style.visibility = 'visible';
 },
 
 setUpEventListeners: function(){

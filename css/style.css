@@ -17,9 +17,8 @@ body{
   color: white;
   width: 100%;
    /* to keep footer at bottom of page*/
-  min-height:100%;
   position:relative;
-  padding-bottom: 150px;
+  padding-bottom: 200px;
 }
 
 .header{
@@ -212,6 +211,7 @@ a:link {
   text-align: center;
   bottom:0;
   left:0;
+  visibility: hidden;
 }
 
 #footer  a{
@@ -242,3 +242,8 @@ a:link {
   .single_channel:nth-child(n) {
     margin-right: 0;
   }
+  
+  #container {  padding-bottom: 50px; }
+}
+  
+  
