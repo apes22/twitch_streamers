@@ -1,5 +1,7 @@
 # Twitch Streamers - Intermediate Front End Development Project
 
+Shows whether a Twitch streamer is online, offline, or no longer active. Uses the Twitch.tv JSON API to get twitch streamers information. Built using Vanilla JS, HTML, and CSS3.
+
 ## Challenge Details from FreeCodeCamp
 
 Objective: Build a CodePen.io app that is functionally similar to this: https://codepen.io/FreeCodeCamp/full/Myvqmo/.
