@@ -1,7 +1,7 @@
 [{
 		"shelter": "A Woman's Place",
 		"wishlist": "http://nebula.wsimg.com/2bd242927c95e4f403e6935661799d32?AccessKeyId=F12F8D32991CD809DDFB&disposition=0&alloworigin=1",
-		"needs": ["toiletries"],
+		"needs": ["toiletries", "towels", "blankets", "furniture", "underwear", "socks", "toothbrush/paste", "Laundry detergent", "clothing"],
 		"website": "http://www.catsinc.org/a-woman-s-place.html"
 	},
 	{
@@ -25,7 +25,7 @@
 	{
 		"shelter": "La Casa De Las Madres",
 		"wishlist": "https://www.lacasa.org/help/donate-goods/wish-list/",
-		"needs": ["toiletries"],
+		"needs": ["toiletries", "socks", "underwear", "toilet paper", "toothbrush/paste", "diapers", "soap", "baby wipes", "notepads", "sticky notes", "pens"],
 		"website": "http://www.sfsafehouse.org/give.html"
 	},
 	{
@@ -43,7 +43,7 @@
 	{
 		"shelter": "W.O.M.A.N Inc",
 		"wishlist": "http://www.womaninc.org/wishlist/",
-		"needs": ["money"],
+		"needs": ["money", "gift cards", "BART tickets", "Muni Tickets", "clothing"],
 		"website": "https://donatenow.networkforgood.org/WOMANINC?code=NewWebsite"
 	},
 	{
@@ -67,13 +67,13 @@
 	{
 		"shelter": "Hamilton Families",
 		"wishlist": "https://hamiltonfamilies.org/get-involved/wish-list/",
-		"needs": ["toiletries"],
+		"needs": ["toiletries", "clothing", "baby wipes", "feminine hygiene", "socks", "underwear", "toothbrush/paste", "baby supplies", "pens", "sticky notes", "notepads", "soap", "diapers"],
 		"website": "http://www.uchsmotherbrowns.org/donations.html"
 	},
 	{
 		"shelter": "St. Vincent De Paul Society",
 		"wishlist": "https://svdp-sf.org/get-involved/donate/",
-		"needs": ["underwear"],
+		"needs": ["underwear", "clothing", "socks"],
 		"website": "https://svdp-sf.org/get-involved/donate/"
 	},
 	{
