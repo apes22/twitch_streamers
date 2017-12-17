@@ -161,7 +161,7 @@ displayUsers: function(users){
         var channel_prev_img = this.createPreviewImg(user.active);
         channel_Li.appendChild(channel_prev_img); 
 
-        var unknown_logo = "http://2am.ninja/twitch/img/unknown.png";
+        var unknown_logo = "https://res.cloudinary.com/maribelduran/image/upload/v1513489441/unknown_placeholder.png";
         var infoDiv = this.createInfoDiv(unknown_logo, user.name);
         channel_Li.appendChild(infoDiv);    
       }  
